@@ -1,8 +1,17 @@
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const FILE = "users-app.json";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ZAWSZE zapisuje obok users-app.js
+const FILE = path.join(__dirname, "users-app.json");
 
 export function loadUsers() {
+  if (!fs.existsSync(FILE)) {
+    fs.writeFileSync(FILE, "[]");
+  }
   return JSON.parse(fs.readFileSync(FILE, "utf8"));
 }
 
