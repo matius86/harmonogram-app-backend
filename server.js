@@ -11,7 +11,13 @@ const app = express();
 app.use(express.json());
 
 // 🔥 ŚCIEŻKA DO PLIKU Z UŻYTKOWNIKAMI
-const USERS_FILE = path.join(__dirname, "users-app.json");
+const USERS_FILE = "/data/users-app.json";
+
+// Jeśli plik nie istnieje — utwórz pusty
+if (!fs.existsSync(USERS_FILE)) {
+  fs.writeFileSync(USERS_FILE, "[]");
+}
+
 
 // 🔥 Wczytaj użytkowników
 function loadUsers() {
