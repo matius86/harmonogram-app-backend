@@ -46,12 +46,29 @@ app.post("/register-fcm", (req, res) => {
   users = users.filter(u => u.userId !== userId);
 
   // Dodaj nowy wpis
-  users.push({ userId, fcmToken, locality });
+  users.push({
+    userId,
+    fcmToken,
+    locality,
+    updatedAt: new Date().toISOString()
+  });
 
   saveUsers(users);
 
   console.log("🔥 User saved:", { userId, locality });
   res.json({ ok: true });
+});
+
+// ⭐ DEBUG USERS — pełna lista użytkowników
+app.get("/debug-users", (req, res) => {
+  console.log("🔥 /debug-users hit");
+
+  const users = loadUsers();
+
+  res.json({
+    count: users.length,
+    users,
+  });
 });
 
 // ⭐ TEST FCM
