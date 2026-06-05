@@ -17,7 +17,7 @@ export async function run(type) {
   for (const user of users) {
     console.log("🔥 Sending to user:", user);
 
-    await sendFcm({
+    const ok = await sendFcm({
       fcmToken: user.fcmToken,
       title: "Test powiadomienia",
       body: "To jest test FCM",
@@ -25,6 +25,10 @@ export async function run(type) {
       wasteType: "",
       date: "",
     });
+
+    if (!ok) {
+      console.log("⚠ Pominięto użytkownika — token nieważny lub błąd FCM");
+    }
   }
 
   console.log("🔥 Worker finished");
