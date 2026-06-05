@@ -1,44 +1,31 @@
-import { getAllUsers } from "./users-app.js";
-import { getPickupForDate, getNextAfter } from "./schedule.js";
 import { sendFcm } from "./fcmClient.js";
+import { loadUsers } from "./users-app.js";
 
-export async function run(time) {
-  const users = getAllUsers();
+export async function run(type) {
+  console.log("🔥 Worker start, type:", type);
 
-  const today = new Date().toISOString().split("T")[0];
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+  const users = loadUsers();
+  console.log("🔥 Users loaded:", users);
+
+  if (!users || users.length === 0) {
+    console.log("❌ No users found");
+    return;
+  }
+
+  console.log(`🔥 Sending notifications to ${users.length} users`);
 
   for (const user of users) {
-    if (!user.fcmToken || !user.locality) continue;
-
-    const targetDate = time === "morning" ? today : tomorrow;
-
-    const entry = getPickupForDate(user.locality, targetDate);
-    if (!entry) continue;
-
-    const next = getNextAfter(user.locality, targetDate);
-
-    const title =
-      time === "evening"
-        ? "Jutro odbiór odpadów"
-        : "Dzisiejszy odbiór odpadów";
-
-    let body =
-      time === "evening"
-        ? `Jutro odbiór: ${entry.morning} (${entry.date})`
-        : `Dziś odbiór: ${entry.morning} (${entry.date})`;
-
-    if (next && time === "morning") {
-      body += `\nNastępny: ${next.morning} (${next.date})`;
-    }
+    console.log("🔥 Sending to user:", user);
 
     await sendFcm({
       fcmToken: user.fcmToken,
-      title,
-      body,
-      type: time,
-      wasteType: entry.morning,
-      date: entry.date
+      title: "Test powiadomienia",
+      body: "To jest test FCM",
+      type: "test",
+      wasteType: "",
+      date: "",
     });
   }
+
+  console.log("🔥 Worker finished");
 }
