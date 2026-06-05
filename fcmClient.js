@@ -1,11 +1,12 @@
-import fetch from "node-fetch";
 import { google } from "googleapis";
-import fs from "fs";
 
-const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
 const SERVICE_ACCOUNT = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
 
+const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
+
 async function getAccessToken() {
+  console.log("🔥 getAccessToken() start");
+
   const jwtClient = new google.auth.JWT(
     SERVICE_ACCOUNT.client_email,
     null,
@@ -15,44 +16,49 @@ async function getAccessToken() {
   );
 
   const tokens = await jwtClient.authorize();
+  console.log("🔥 Access token OK");
   return tokens.access_token;
 }
 
 export async function sendFcm({ fcmToken, title, body, type, wasteType, date }) {
-  const accessToken = await getAccessToken();
+  console.log("🔥 sendFcm() called");
+  console.log("🔥 Token:", fcmToken);
+  console.log("🔥 Title:", title);
+  console.log("🔥 Body:", body);
 
   const message = {
     message: {
       token: fcmToken,
       notification: {
         title,
-        body
+        body,
       },
       data: {
-        type,
-        wasteType,
-        date
-      }
-    }
+        type: type || "",
+        wasteType: wasteType || "",
+        date: date || "",
+      },
+    },
   };
 
-  const url =
-    "https://fcm.googleapis.com/v1/projects/harmonogramy-krokowa/messages:send";
+  console.log("🔥 Payload:", JSON.stringify(message, null, 2));
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(message)
-  });
+  const accessToken = await getAccessToken();
 
-  const text = await res.text();
+  const response = await fetch(
+    `https://fcm.googleapis.com/v1/projects/${SERVICE_ACCOUNT.project_id}/messages:send`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    }
+  );
 
-  if (!res.ok) {
-    console.error("❌ FCM ERROR:", res.status, text);
-  } else {
-    console.log("📨 FCM OK:", text);
-  }
+  const result = await response.text();
+  console.log("🔥 Firebase response:", result);
+
+  return result;
 }
