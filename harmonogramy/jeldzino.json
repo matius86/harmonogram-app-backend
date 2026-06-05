@@ -1,0 +1,418 @@
+[
+  {
+    "date": "2026-01-07",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-01-09",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-01-14",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-01-15",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-01-20",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-01-21",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-01-23",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-02-03",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-02-04",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-02-06",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-02-11",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-02-12",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-02-17",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-02-20",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-03-03",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-03-04",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-03-06",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-03-11",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-03-12",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-03-17",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-03-20",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-03-25",
+    "type": "Odzież"
+  },
+  {
+    "date": "2026-03-26",
+    "type": "Tekstylia"
+  },
+  {
+    "date": "2026-03-31",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-04-01",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-04-03",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-04-09",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-04-14",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-04-15",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-04-17",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-04-23",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-04-28",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-04-30",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-05-06",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-05-07",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-05-12",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-05-13",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-05-15",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-05-21",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-05-26",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-05-29",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-06-03",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-06-09",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-06-10",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-06-12",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-06-17",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-06-18",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-06-23",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-06-26",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-07-02",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-07-03",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-07-07",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-07-08",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-07-10",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-07-15",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-07-16",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-07-17",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-07-21",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-07-24",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-07-30",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-07-31",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-08-04",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-08-05",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-08-07",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-08-12",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-08-13",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-08-14",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-08-18",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-08-21",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-08-27",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-08-28",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-09-01",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-09-02",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-09-04",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-09-09",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-09-10",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-09-15",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-09-18",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-09-24",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-09-29",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-10-02",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-10-07",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-10-08",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-10-13",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-10-16",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-10-21",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-10-22",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-10-27",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-10-30",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-11-04",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-11-05",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-11-10",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-11-13",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-11-18",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-11-24",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-11-27",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-12-03",
+    "type": "Papier"
+  },
+  {
+    "date": "2026-12-08",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-12-09",
+    "type": "Szkło"
+  },
+  {
+    "date": "2026-12-10",
+    "type": "Bio"
+  },
+  {
+    "date": "2026-12-11",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-12-22",
+    "type": "Zmieszane"
+  },
+  {
+    "date": "2026-12-23",
+    "type": "Plastik"
+  },
+  {
+    "date": "2026-04-18",
+    "type": "Odpady wielkogabarytowe i elektroodpady"
+  }
+]
