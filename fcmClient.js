@@ -1,5 +1,7 @@
 import { google } from "googleapis";
 
+console.log("🔥 PRIVATE KEY LENGTH:", SERVICE_ACCOUNT.private_key?.length);
+
 // 🔥 KLUCZOWY LOG — zobaczymy, co Render naprawdę widzi
 console.log("🔥 SERVICE_ACCOUNT_JSON RAW:", process.env.SERVICE_ACCOUNT_JSON);
 
