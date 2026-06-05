@@ -1,6 +1,7 @@
 // server.js
 import express from "express";
 import { registerUserFcm } from "./users-app.js";
+import { run } from "./worker.js"; // ⭐ MUSI BYĆ
 import "./worker.js"; // uruchamia crony 06:00 i 18:00
 
 const app = express();
@@ -22,6 +23,17 @@ app.post("/register-fcm", (req, res) => {
   registerUserFcm(userId, fcmToken, locality);
 
   res.json({ ok: true });
+});
+
+// ⭐ ENDPOINT TESTOWY
+app.get("/test-fcm", async (req, res) => {
+  try {
+    await run("morning"); // albo "evening"
+    res.send("OK");
+  } catch (e) {
+    console.error("❌ test-fcm error:", e);
+    res.status(500).send("ERROR");
+  }
 });
 
 const PORT = process.env.PORT || 3001;
