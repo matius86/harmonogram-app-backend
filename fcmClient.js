@@ -1,14 +1,16 @@
 import { google } from "googleapis";
 
-console.log("🔥 PRIVATE KEY LENGTH:", SERVICE_ACCOUNT.private_key?.length);
+// 🔥 Najpierw pobieramy RAW
+const raw = process.env.SERVICE_ACCOUNT_JSON;
+console.log("🔥 RAW LENGTH:", raw?.length);
+console.log("🔥 RAW START:", raw?.substring(0, 200));
 
-// 🔥 KLUCZOWY LOG — zobaczymy, co Render naprawdę widzi
-console.log("🔥 SERVICE_ACCOUNT_JSON RAW:", process.env.SERVICE_ACCOUNT_JSON);
-
+// 🔥 Dopiero teraz parsujemy
 let SERVICE_ACCOUNT;
 try {
-  SERVICE_ACCOUNT = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
-  console.log("🔥 SERVICE_ACCOUNT PARSED:", SERVICE_ACCOUNT);
+  SERVICE_ACCOUNT = JSON.parse(raw);
+  console.log("🔥 PARSED KEYS:", Object.keys(SERVICE_ACCOUNT));
+  console.log("🔥 private_key length:", SERVICE_ACCOUNT.private_key?.length);
 } catch (e) {
   console.error("❌ JSON PARSE ERROR:", e);
   throw e;
@@ -18,7 +20,6 @@ const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
 
 async function getAccessToken() {
   console.log("🔥 getAccessToken() start");
-
   console.log("🔥 client_email:", SERVICE_ACCOUNT.client_email);
   console.log("🔥 private_key exists:", !!SERVICE_ACCOUNT.private_key);
 
@@ -37,22 +38,12 @@ async function getAccessToken() {
 
 export async function sendFcm({ fcmToken, title, body, type, wasteType, date }) {
   console.log("🔥 sendFcm() called");
-  console.log("🔥 Token:", fcmToken);
-  console.log("🔥 Title:", title);
-  console.log("🔥 Body:", body);
 
   const message = {
     message: {
       token: fcmToken,
-      notification: {
-        title,
-        body,
-      },
-      data: {
-        type: type || "",
-        wasteType: wasteType || "",
-        date: date || "",
-      },
+      notification: { title, body },
+      data: { type, wasteType, date },
     },
   };
 
