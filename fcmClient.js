@@ -1,35 +1,58 @@
 import fetch from "node-fetch";
+import { google } from "googleapis";
+import fs from "fs";
 
-const FCM_SERVER_KEY = process.env.FCM_SERVER_KEY;
+const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
+const SERVICE_ACCOUNT = JSON.parse(fs.readFileSync("service-account.json", "utf8"));
+
+async function getAccessToken() {
+  const jwtClient = new google.auth.JWT(
+    SERVICE_ACCOUNT.client_email,
+    null,
+    SERVICE_ACCOUNT.private_key,
+    SCOPES,
+    null
+  );
+
+  const tokens = await jwtClient.authorize();
+  return tokens.access_token;
+}
 
 export async function sendFcm({ fcmToken, title, body, type, wasteType, date }) {
-  if (!FCM_SERVER_KEY) {
-    console.error("Brak FCM_SERVER_KEY w env");
-    return;
-  }
+  const accessToken = await getAccessToken();
 
-  const payload = {
-    to: fcmToken,
-    priority: "high",
-    data: {
-      title,
-      body,
-      type,
-      wasteType,
-      date
+  const message = {
+    message: {
+      token: fcmToken,
+      notification: {
+        title,
+        body
+      },
+      data: {
+        type,
+        wasteType,
+        date
+      }
     }
   };
 
-  const res = await fetch("https://fcm.googleapis.com/fcm/send", {
+  const url =
+    "https://fcm.googleapis.com/v1/projects/harmonogramy-krokowa/messages:send";
+
+  const res = await fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `key=${FCM_SERVER_KEY}`
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(message)
   });
 
+  const text = await res.text();
+
   if (!res.ok) {
-    console.error("FCM error:", res.status, await res.text());
+    console.error("❌ FCM ERROR:", res.status, text);
+  } else {
+    console.log("📨 FCM OK:", text);
   }
 }
