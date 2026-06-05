@@ -6,7 +6,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ZAWSZE zapisuje obok users-app.js
-const FILE = path.join(__dirname, "users-app.json");
+const FILE = path.join(__dirname, "data", "users-app.json");
+
 
 export function loadUsers() {
   if (!fs.existsSync(FILE)) {
