@@ -1,11 +1,24 @@
 import { google } from "googleapis";
 
-const SERVICE_ACCOUNT = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
+// 🔥 KLUCZOWY LOG — zobaczymy, co Render naprawdę widzi
+console.log("🔥 SERVICE_ACCOUNT_JSON RAW:", process.env.SERVICE_ACCOUNT_JSON);
+
+let SERVICE_ACCOUNT;
+try {
+  SERVICE_ACCOUNT = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
+  console.log("🔥 SERVICE_ACCOUNT PARSED:", SERVICE_ACCOUNT);
+} catch (e) {
+  console.error("❌ JSON PARSE ERROR:", e);
+  throw e;
+}
 
 const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
 
 async function getAccessToken() {
   console.log("🔥 getAccessToken() start");
+
+  console.log("🔥 client_email:", SERVICE_ACCOUNT.client_email);
+  console.log("🔥 private_key exists:", !!SERVICE_ACCOUNT.private_key);
 
   const jwtClient = new google.auth.JWT(
     SERVICE_ACCOUNT.client_email,
