@@ -10,17 +10,17 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// 🔥 KATALOG NA DANE (Render pozwala pisać TYLKO tutaj)
-const DATA_DIR = path.join(__dirname, "data");
+// 🔥 TRWAŁY KATALOG NA RENDERZE
+const DATA_DIR = "/opt/render/project/data";
 const USERS_FILE = path.join(DATA_DIR, "users-app.json");
 
-// 🔥 Upewnij się, że katalog data istnieje
+// 🔥 Upewnij się, że katalog istnieje
 if (!fs.existsSync(DATA_DIR)) {
-  console.log("📁 Tworzę katalog data");
-  fs.mkdirSync(DATA_DIR);
+  console.log("📁 Tworzę katalog /opt/render/project/data");
+  fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-// 🔥 Upewnij się, że plik users-app.json istnieje
+// 🔥 Upewnij się, że plik istnieje
 if (!fs.existsSync(USERS_FILE)) {
   console.log("📄 Tworzę plik users-app.json");
   fs.writeFileSync(USERS_FILE, "[]");
