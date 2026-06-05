@@ -5,19 +5,29 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ZAWSZE zapisuje obok users-app.js
+// 🔥 TRWAŁY PLIK — MUSI BYĆ W REPO: /data/users-app.json
 const FILE = path.join(__dirname, "data", "users-app.json");
 
+// 🔥 Upewnij się, że plik istnieje
+if (!fs.existsSync(FILE)) {
+  fs.writeFileSync(FILE, "[]");
+}
 
 export function loadUsers() {
-  if (!fs.existsSync(FILE)) {
-    fs.writeFileSync(FILE, "[]");
+  try {
+    return JSON.parse(fs.readFileSync(FILE, "utf8"));
+  } catch (e) {
+    console.log("❌ loadUsers error:", e);
+    return [];
   }
-  return JSON.parse(fs.readFileSync(FILE, "utf8"));
 }
 
 export function saveUsers(users) {
-  fs.writeFileSync(FILE, JSON.stringify(users, null, 2));
+  try {
+    fs.writeFileSync(FILE, JSON.stringify(users, null, 2));
+  } catch (e) {
+    console.log("❌ saveUsers error:", e);
+  }
 }
 
 export function registerUserFcm(userId, fcmToken, locality) {
