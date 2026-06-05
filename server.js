@@ -11,12 +11,12 @@ const app = express();
 app.use(express.json());
 
 // 🔥 TRWAŁY KATALOG NA RENDERZE
-const DATA_DIR = "/opt/render/project/data";
+const DATA_DIR = "/var/data";
 const USERS_FILE = path.join(DATA_DIR, "users-app.json");
 
 // 🔥 Upewnij się, że katalog istnieje
 if (!fs.existsSync(DATA_DIR)) {
-  console.log("📁 Tworzę katalog /opt/render/project/data");
+  console.log("📁 Tworzę katalog /var/data");
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
