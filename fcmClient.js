@@ -3,7 +3,7 @@ import { google } from "googleapis";
 import fs from "fs";
 
 const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
-const SERVICE_ACCOUNT = JSON.parse(fs.readFileSync("service-account.json", "utf8"));
+const SERVICE_ACCOUNT = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
 
 async function getAccessToken() {
   const jwtClient = new google.auth.JWT(
