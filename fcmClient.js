@@ -1,4 +1,5 @@
 import admin from "firebase-admin";
+import { loadUsers, saveUsers } from "./users-app.js";
 
 // 🔥 Wczytujemy JSON z Rendera
 const raw = process.env.SERVICE_ACCOUNT_JSON;
@@ -27,15 +28,10 @@ if (!admin.apps.length) {
 export async function sendFcm({ fcmToken, title, body, type, wasteType, date }) {
   console.log("🔥 sendFcm() using firebase-admin");
   console.log("🔥 Token:", fcmToken);
-  console.log("🔥 Title:", title);
-  console.log("🔥 Body:", body);
 
   const message = {
     token: fcmToken,
-    notification: {
-      title,
-      body,
-    },
+    notification: { title, body },
     data: {
       type: type || "",
       wasteType: wasteType || "",
@@ -47,10 +43,21 @@ export async function sendFcm({ fcmToken, title, body, type, wasteType, date }) 
 
   try {
     const response = await admin.messaging().send(message);
-    console.log("🔥 Firebase response:", response);
-    return response;
+    console.log("✅ Firebase response:", response);
+    return true;
+
   } catch (err) {
     console.error("❌ Firebase error:", err);
-    throw err;
+
+    // 🧹 CLEANUP nieważnych tokenów
+    if (err.errorInfo?.code === "messaging/registration-token-not-registered") {
+      console.log("🧹 Usuwam nieważny token:", fcmToken);
+
+      const users = loadUsers();
+      const filtered = users.filter(u => u.fcmToken !== fcmToken);
+      saveUsers(filtered);
+    }
+
+    return false;
   }
 }
