@@ -10,13 +10,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// 🔥 KATALOG I PLIK NA DANE
-const DATA_DIR = "/data";
+// 🔥 KATALOG NA DANE (Render pozwala pisać TYLKO tutaj)
+const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users-app.json");
 
-// 🔥 Upewnij się, że katalog /data istnieje
+// 🔥 Upewnij się, że katalog data istnieje
 if (!fs.existsSync(DATA_DIR)) {
-  console.log("📁 Tworzę katalog /data");
+  console.log("📁 Tworzę katalog data");
   fs.mkdirSync(DATA_DIR);
 }
 
