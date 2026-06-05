@@ -1,8 +1,60 @@
 import express from "express";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { run } from "./worker.js";
 
-const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+const app = express();
+app.use(express.json());
+
+// 🔥 ŚCIEŻKA DO PLIKU Z UŻYTKOWNIKAMI
+const USERS_FILE = path.join(__dirname, "users-app.json");
+
+// 🔥 Wczytaj użytkowników
+function loadUsers() {
+  try {
+    const data = fs.readFileSync(USERS_FILE, "utf8");
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+// 🔥 Zapisz użytkowników
+function saveUsers(users) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
+
+// ⭐ NOWY ENDPOINT — REJESTRACJA FCM
+app.post("/register-fcm", (req, res) => {
+  console.log("🔥 /register-fcm hit");
+  console.log("📥 Body:", req.body);
+
+  const { userId, fcmToken, locality } = req.body;
+
+  if (!userId || !fcmToken || !locality) {
+    console.log("❌ Missing fields");
+    return res.status(400).json({ error: "Missing userId, fcmToken or locality" });
+  }
+
+  let users = loadUsers();
+
+  // Usuń stare wpisy tego userId
+  users = users.filter(u => u.userId !== userId);
+
+  // Dodaj nowy wpis
+  users.push({ userId, fcmToken, locality });
+
+  saveUsers(users);
+
+  console.log("🔥 User saved:", { userId, locality });
+  res.json({ ok: true });
+});
+
+// ⭐ TEST FCM
 app.get("/test-fcm", async (req, res) => {
   console.log("🔥 /test-fcm endpoint hit");
 
