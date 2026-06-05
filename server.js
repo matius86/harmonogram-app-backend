@@ -10,31 +10,43 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// 🔥 ŚCIEŻKA DO PLIKU Z UŻYTKOWNIKAMI
-const USERS_FILE = "/data/users-app.json";
+// 🔥 KATALOG I PLIK NA DANE
+const DATA_DIR = "/data";
+const USERS_FILE = path.join(DATA_DIR, "users-app.json");
 
-// Jeśli plik nie istnieje — utwórz pusty
-if (!fs.existsSync(USERS_FILE)) {
-  fs.writeFileSync(USERS_FILE, "[]");
+// 🔥 Upewnij się, że katalog /data istnieje
+if (!fs.existsSync(DATA_DIR)) {
+  console.log("📁 Tworzę katalog /data");
+  fs.mkdirSync(DATA_DIR);
 }
 
+// 🔥 Upewnij się, że plik users-app.json istnieje
+if (!fs.existsSync(USERS_FILE)) {
+  console.log("📄 Tworzę plik users-app.json");
+  fs.writeFileSync(USERS_FILE, "[]");
+}
 
 // 🔥 Wczytaj użytkowników
 function loadUsers() {
   try {
     const data = fs.readFileSync(USERS_FILE, "utf8");
     return JSON.parse(data);
-  } catch {
+  } catch (e) {
+    console.log("❌ loadUsers error:", e);
     return [];
   }
 }
 
 // 🔥 Zapisz użytkowników
 function saveUsers(users) {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  } catch (e) {
+    console.log("❌ saveUsers error:", e);
+  }
 }
 
-// ⭐ NOWY ENDPOINT — REJESTRACJA FCM
+// ⭐ REJESTRACJA FCM
 app.post("/register-fcm", (req, res) => {
   console.log("🔥 /register-fcm hit");
   console.log("📥 Body:", req.body);
@@ -65,7 +77,7 @@ app.post("/register-fcm", (req, res) => {
   res.json({ ok: true });
 });
 
-// ⭐ DEBUG USERS — pełna lista użytkowników
+// ⭐ DEBUG USERS
 app.get("/debug-users", (req, res) => {
   console.log("🔥 /debug-users hit");
 
