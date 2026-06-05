@@ -2,7 +2,7 @@ import { getAllUsers } from "./users-app.js";
 import { getPickupForDate, getNextAfter } from "./schedule.js";
 import { sendFcm } from "./fcmClient.js";
 
-async function run(time) {
+export async function run(time) {
   const users = getAllUsers();
 
   const today = new Date().toISOString().split("T")[0];
