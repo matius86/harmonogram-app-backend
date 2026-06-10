@@ -1,63 +1,88 @@
-import admin from "firebase-admin";
+import express from "express";
 import { loadUsers, saveUsers } from "./users-app.js";
+import { run } from "./worker.js";
 
-// 🔥 Wczytujemy JSON z Rendera
-const raw = process.env.SERVICE_ACCOUNT_JSON;
-console.log("🔥 RAW LENGTH:", raw?.length);
-console.log("🔥 RAW START:", raw?.substring(0, 200));
+const app = express();
+app.use(express.json());
 
-let serviceAccount;
-try {
-  serviceAccount = JSON.parse(raw);
-  console.log("🔥 PARSED KEYS:", Object.keys(serviceAccount));
-  console.log("🔥 private_key length:", serviceAccount.private_key?.length);
-} catch (e) {
-  console.error("❌ JSON PARSE ERROR:", e);
-  throw e;
-}
+// ⭐ REJESTRACJA FCM
+app.post("/register-fcm", (req, res) => {
+  console.log("🔥 /register-fcm hit");
+  console.log("📥 Body:", req.body);
 
-// 🔥 Inicjalizacja firebase-admin
-if (!admin.apps.length) {
-  console.log("🔥 Initializing firebase-admin…");
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+  const { userId, fcmToken, locality } = req.body;
+
+  if (!userId || !fcmToken || !locality) {
+    console.log("❌ Missing fields");
+    return res.status(400).json({ error: "Missing userId, fcmToken or locality" });
+  }
+
+  let users = loadUsers();
+
+  // Usuń stare wpisy tego userId
+  users = users.filter(u => u.userId !== userId);
+
+  // Dodaj nowy wpis
+  users.push({
+    userId,
+    fcmToken,
+    locality,
+    updatedAt: new Date().toISOString()
   });
-  console.log("🔥 firebase-admin initialized");
-}
 
-export async function sendFcm({ fcmToken, title, body, type, wasteType, date }) {
-  console.log("🔥 sendFcm() using firebase-admin");
-  console.log("🔥 Token:", fcmToken);
+  saveUsers(users);
 
-  const message = {
-    token: fcmToken,
-    notification: { title, body },
-    data: {
-      type: type || "",
-      wasteType: wasteType || "",
-      date: date || "",
-    },
-  };
+  console.log("🔥 User saved:", { userId, locality });
+  res.json({ ok: true });
+});
 
-  console.log("🔥 Payload:", JSON.stringify(message, null, 2));
+// ⭐ DEBUG USERS
+app.get("/debug-users", (req, res) => {
+  console.log("🔥 /debug-users hit");
+
+  const users = loadUsers();
+
+  res.json({
+    count: users.length,
+    users,
+  });
+});
+
+// ⭐ CRON /run-worker
+app.get("/run-worker", async (req, res) => {
+  const type = req.query.type;
+
+  console.log("🔥 /run-worker hit, type:", type);
+
+  if (!type || !["Evening", "Morning"].includes(type)) {
+    console.log("❌ Invalid type");
+    return res.status(400).json({ error: "Invalid type. Use Evening or Morning." });
+  }
 
   try {
-    const response = await admin.messaging().send(message);
-    console.log("✅ Firebase response:", response);
-    return true;
-
-  } catch (err) {
-    console.error("❌ Firebase error:", err);
-
-    // 🧹 CLEANUP nieważnych tokenów
-    if (err.errorInfo?.code === "messaging/registration-token-not-registered") {
-      console.log("🧹 Usuwam nieważny token:", fcmToken);
-
-      const users = loadUsers();
-      const filtered = users.filter(u => u.fcmToken !== fcmToken);
-      saveUsers(filtered);
-    }
-
-    return false;
+    await run(type);
+    console.log(`🔥 Worker finished for type: ${type}`);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("❌ Worker error:", e);
+    res.status(500).json({ error: "Worker failed" });
   }
-}
+});
+
+// ⭐ TEST FCM
+app.get("/test-fcm", async (req, res) => {
+  console.log("🔥 /test-fcm endpoint hit");
+
+  try {
+    await run("Morning");
+    console.log("🔥 run('Morning') finished");
+    res.send("OK");
+  } catch (e) {
+    console.error("❌ test-fcm error:", e);
+    res.status(500).send("ERROR");
+  }
+});
+
+app.listen(10000, () => {
+  console.log("🔥 Backend listening on 10000");
+});
