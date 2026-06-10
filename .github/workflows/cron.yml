@@ -1,0 +1,29 @@
+name: Harmonogram CRON
+
+on:
+  schedule:
+    # 🔥 Evening — codziennie o 18:00 UTC (20:00 PL)
+    - cron: "0 18 * * *"
+    # 🔥 Morning — codziennie o 06:00 UTC (08:00 PL)
+    - cron: "0 6 * * *"
+
+  workflow_dispatch: {}
+
+jobs:
+  run-worker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔥 Wywołanie Evening lub Morning
+        run: |
+          HOUR=$(date -u +"%H")
+
+          if [ "$HOUR" = "18" ]; then
+            echo "🔥 Evening CRON"
+            curl -X GET "https://harmonogram-app-backend.onrender.com/run-worker?type=Evening"
+          elif [ "$HOUR" = "06" ]; then
+            echo "🔥 Morning CRON"
+            curl -X GET "https://harmonogram-app-backend.onrender.com/run-worker?type=Morning"
+          else
+            echo "⏭ Nie ten czas — pomijam"
+          fi
