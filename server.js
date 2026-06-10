@@ -83,13 +83,34 @@ app.get("/debug-users", (req, res) => {
   });
 });
 
+// ⭐ NOWY ENDPOINT — CRON /run-worker
+app.get("/run-worker", async (req, res) => {
+  const type = req.query.type;
+
+  console.log("🔥 /run-worker hit, type:", type);
+
+  if (!type || !["Evening", "Morning"].includes(type)) {
+    console.log("❌ Invalid type");
+    return res.status(400).json({ error: "Invalid type. Use Evening or Morning." });
+  }
+
+  try {
+    await run(type);
+    console.log(`🔥 Worker finished for type: ${type}`);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("❌ Worker error:", e);
+    res.status(500).json({ error: "Worker failed" });
+  }
+});
+
 // ⭐ TEST FCM
 app.get("/test-fcm", async (req, res) => {
   console.log("🔥 /test-fcm endpoint hit");
 
   try {
-    await run("morning");
-    console.log("🔥 run('morning') finished");
+    await run("Morning");
+    console.log("🔥 run('Morning') finished");
     res.send("OK");
   } catch (e) {
     console.error("❌ test-fcm error:", e);
