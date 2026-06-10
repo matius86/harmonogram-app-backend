@@ -5,11 +5,14 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🔥 JEDYNA PRAWIDŁOWA ŚCIEŻKA — zawsze /data/users-app.json
+// 🔥 PRAWIDŁOWA ŚCIEŻKA NA RENDERZE
+// /opt/render/project/src/users-app.js
+// /opt/render/project/data/users-app.json
 const FILE = path.join(__dirname, "..", "data", "users-app.json");
 
 // 🔥 Upewnij się, że plik istnieje
 if (!fs.existsSync(FILE)) {
+  console.log("📄 Tworzę plik users-app.json");
   fs.writeFileSync(FILE, "[]");
 }
 
