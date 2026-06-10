@@ -5,14 +5,17 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🔥 PRAWIDŁOWA ŚCIEŻKA NA RENDERZE
-// /opt/render/project/src/users-app.js
-// /opt/render/project/data/users-app.json
-const FILE = path.join(__dirname, "..", "data", "users-app.json");
+// 🔥 TRWAŁY PLIK — MUSI BYĆ W REPO: /data/users-app.json
+const DATA_DIR = path.join(__dirname, "data");
+const FILE = path.join(DATA_DIR, "users-app.json");
+
+// 🔥 Upewnij się, że katalog data istnieje
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR);
+}
 
 // 🔥 Upewnij się, że plik istnieje
 if (!fs.existsSync(FILE)) {
-  console.log("📄 Tworzę plik users-app.json");
   fs.writeFileSync(FILE, "[]");
 }
 
