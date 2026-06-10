@@ -2,26 +2,36 @@ import { sendFcm } from "./fcmClient.js";
 import { loadUsers } from "./users-app.js";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+
+// 🔥 Absolutna ścieżka do katalogu projektu (działa na Render)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.join(__dirname); // /opt/render/project/src
 
 // 🔥 Parsowanie daty jako CZAS LOKALNY (PL), nie UTC
 function parseLocalDate(dateStr) {
   const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(y, m - 1, d, 23, 59, 59); // dzień trwa do końca dnia
+  return new Date(y, m - 1, d, 23, 59, 59);
 }
 
-// 🔥 Wczytanie harmonogramu z plików JSON
+// 🔥 Wczytanie harmonogramu z folderu /harmonogramy
 function loadSchedule(locality) {
   try {
-    const filePath = path.join(__dirname, "harmonogramy", `${locality}.json`);
+    const filePath = path.join(ROOT, "harmonogramy", `${locality}.json`);
+
+    console.log("📁 Szukam harmonogramu pod ścieżką:", filePath);
+
     const raw = fs.readFileSync(filePath, "utf8");
     return JSON.parse(raw);
+
   } catch (e) {
     console.log("❌ Brak harmonogramu dla:", locality);
     return [];
   }
 }
 
-// 🔥 Znajdź najbliższy odbiór (z poprawnym czasem lokalnym)
+// 🔥 Znajdź najbliższy odbiór
 function findNextPickup(schedule) {
   const now = new Date();
 
