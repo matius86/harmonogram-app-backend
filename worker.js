@@ -12,7 +12,7 @@ function parseLocalDate(dateStr) {
 // 🔥 Wczytanie harmonogramu z plików JSON
 function loadSchedule(locality) {
   try {
-    const filePath = path.join("harmonogramy", `${locality}.json`);
+    const filePath = path.join(__dirname, "harmonogramy", `${locality}.json`);
     const raw = fs.readFileSync(filePath, "utf8");
     return JSON.parse(raw);
   } catch (e) {
