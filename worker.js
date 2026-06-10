@@ -3,6 +3,12 @@ import { loadUsers } from "./users-app.js";
 import fs from "fs";
 import path from "path";
 
+// 🔥 Parsowanie daty jako CZAS LOKALNY (PL), nie UTC
+function parseLocalDate(dateStr) {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d, 23, 59, 59); // dzień trwa do końca dnia
+}
+
 // 🔥 Wczytanie harmonogramu z plików JSON
 function loadSchedule(locality) {
   try {
@@ -15,18 +21,18 @@ function loadSchedule(locality) {
   }
 }
 
-// 🔥 Znajdź najbliższy odbiór
+// 🔥 Znajdź najbliższy odbiór (z poprawnym czasem lokalnym)
 function findNextPickup(schedule) {
   const now = new Date();
 
   const upcoming = schedule.filter((item) => {
-    const d = new Date(item.date);
+    const d = parseLocalDate(item.date);
     return d >= now;
   });
 
   if (upcoming.length === 0) return null;
 
-  upcoming.sort((a, b) => new Date(a.date) - new Date(b.date));
+  upcoming.sort((a, b) => parseLocalDate(a.date) - parseLocalDate(b.date));
   return upcoming[0];
 }
 
