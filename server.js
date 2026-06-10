@@ -1,47 +1,9 @@
 import express from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import { loadUsers, saveUsers } from "./users-app.js";
 import { run } from "./worker.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
-
-// 🔥 TRWAŁY KATALOG — MUSI BYĆ W REPO
-const DATA_DIR = path.join(__dirname, "data");
-const USERS_FILE = path.join(DATA_DIR, "users-app.json");
-
-// 🔥 NIE TWORZYMY pliku automatycznie — Render może nadpisać!
-// Jeśli plik nie istnieje → loadUsers zwróci []
-function loadUsers() {
-  try {
-    if (!fs.existsSync(USERS_FILE)) {
-      console.log("⚠ users-app.json nie istnieje — zwracam []");
-      return [];
-    }
-    const data = fs.readFileSync(USERS_FILE, "utf8");
-    return JSON.parse(data);
-  } catch (e) {
-    console.log("❌ loadUsers error:", e);
-    return [];
-  }
-}
-
-// 🔥 Zapisz użytkowników (tylko jeśli katalog istnieje)
-function saveUsers(users) {
-  try {
-    if (fs.existsSync(DATA_DIR)) {
-      fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-    } else {
-      console.log("⚠ DATA_DIR nie istnieje — pomijam zapis");
-    }
-  } catch (e) {
-    console.log("❌ saveUsers error:", e);
-  }
-}
 
 // ⭐ REJESTRACJA FCM
 app.post("/register-fcm", (req, res) => {
@@ -86,7 +48,7 @@ app.get("/debug-users", (req, res) => {
   });
 });
 
-// ⭐ NOWY ENDPOINT — CRON /run-worker
+// ⭐ CRON /run-worker
 app.get("/run-worker", async (req, res) => {
   const type = req.query.type;
 
