@@ -10,19 +10,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// 🔥 TRWAŁY KATALOG — MUSI ISTNIEĆ W REPO
+// 🔥 TRWAŁY KATALOG — MUSI BYĆ W REPO
 const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users-app.json");
 
-// 🔥 Upewnij się, że plik istnieje (katalog musi być w repo!)
-if (!fs.existsSync(USERS_FILE)) {
-  console.log("📄 Tworzę plik users-app.json");
-  fs.writeFileSync(USERS_FILE, "[]");
-}
-
-// 🔥 Wczytaj użytkowników
+// 🔥 NIE TWORZYMY pliku automatycznie — Render może nadpisać!
+// Jeśli plik nie istnieje → loadUsers zwróci []
 function loadUsers() {
   try {
+    if (!fs.existsSync(USERS_FILE)) {
+      console.log("⚠ users-app.json nie istnieje — zwracam []");
+      return [];
+    }
     const data = fs.readFileSync(USERS_FILE, "utf8");
     return JSON.parse(data);
   } catch (e) {
@@ -31,10 +30,14 @@ function loadUsers() {
   }
 }
 
-// 🔥 Zapisz użytkowników
+// 🔥 Zapisz użytkowników (tylko jeśli katalog istnieje)
 function saveUsers(users) {
   try {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    if (fs.existsSync(DATA_DIR)) {
+      fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    } else {
+      console.log("⚠ DATA_DIR nie istnieje — pomijam zapis");
+    }
   } catch (e) {
     console.log("❌ saveUsers error:", e);
   }
