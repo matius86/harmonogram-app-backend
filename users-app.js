@@ -5,8 +5,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🔥 TRWAŁY PLIK — MUSI BYĆ W REPO: /data/users-app.json
-const FILE = path.join(__dirname, "data", "users-app.json");
+// 🔥 JEDYNA PRAWIDŁOWA ŚCIEŻKA — zawsze /data/users-app.json
+const FILE = path.join(__dirname, "..", "data", "users-app.json");
 
 // 🔥 Upewnij się, że plik istnieje
 if (!fs.existsSync(FILE)) {
