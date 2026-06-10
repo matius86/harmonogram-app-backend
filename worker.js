@@ -1,5 +1,34 @@
 import { sendFcm } from "./fcmClient.js";
 import { loadUsers } from "./users-app.js";
+import fs from "fs";
+import path from "path";
+
+// 🔥 Wczytanie harmonogramu z plików JSON
+function loadSchedule(locality) {
+  try {
+    const filePath = path.join("data", "schedule", `${locality}.json`);
+    const raw = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(raw);
+  } catch (e) {
+    console.log("❌ Brak harmonogramu dla:", locality);
+    return [];
+  }
+}
+
+// 🔥 Znajdź najbliższy odbiór
+function findNextPickup(schedule) {
+  const now = new Date();
+
+  const upcoming = schedule.filter((item) => {
+    const d = new Date(item.date);
+    return d >= now;
+  });
+
+  if (upcoming.length === 0) return null;
+
+  upcoming.sort((a, b) => new Date(a.date) - new Date(b.date));
+  return upcoming[0];
+}
 
 export async function run(type) {
   console.log("🔥 Worker start, type:", type);
@@ -15,15 +44,55 @@ export async function run(type) {
   console.log(`🔥 Sending notifications to ${users.length} users`);
 
   for (const user of users) {
-    console.log("🔥 Sending to user:", user);
+    console.log("🔥 Processing user:", user);
+
+    const locality = user.locality;
+    const schedule = loadSchedule(locality);
+
+    if (!schedule || schedule.length === 0) {
+      console.log("⚠ Brak harmonogramu dla:", locality);
+      continue;
+    }
+
+    const next = findNextPickup(schedule);
+    if (!next) {
+      console.log("⚠ Brak przyszłych odbiorów dla:", locality);
+      continue;
+    }
+
+    const nextDate = next.date;
+    const nextType = next.type;
+
+    let title = "";
+    let body = "";
+    let fcmType = "";
+
+    if (type === "Evening") {
+      title = "Jutro odbiór odpadów";
+      body = `${nextType} — ${nextDate}`;
+      fcmType = "Evening";
+    }
+
+    if (type === "Morning") {
+      title = "Dziś odbiór odpadów";
+      body = `${nextType} — ${nextDate}`;
+      fcmType = "Morning";
+    }
+
+    console.log("📦 Payload:", {
+      fcmType,
+      nextType,
+      nextDate,
+      user: user.userId,
+    });
 
     const ok = await sendFcm({
       fcmToken: user.fcmToken,
-      title: "Test powiadomienia",
-      body: "To jest test FCM",
-      type: "test",
-      wasteType: "",
-      date: "",
+      title,
+      body,
+      type: fcmType,
+      wasteType: nextType,
+      date: nextDate,
     });
 
     if (!ok) {
